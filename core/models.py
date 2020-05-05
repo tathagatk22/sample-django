@@ -10,9 +10,9 @@ class CustomUserManager(models.Manager):
     def create_user(self, user_id, real_name, tz):
         """
         This method will be used to create a new Custom User
-        :param user_id: This determines the user id of the following Custom User
-        :param real_name: This determines the real name of the following Custom User
-        :param tz: This determines the TimeZone of the following Custom User
+        :param user_id: This determines the user id of the following CustomUser
+        :param real_name: This determines the real name of the following CustomUser
+        :param tz: This determines the TimeZone of the following CustomUser
         :return response: Will return any Exception if occurred or else a new CustomUser Object
         :return error: Will return True or False
         """
@@ -44,12 +44,12 @@ class ActivityPeriodsManager(models.Manager):
     This Manager handles operations regarding Activity Period
     """
 
-    def create_activity(self, user, start_time, end_time):
+    def create_activity_period(self, user, start_time, end_time):
         """
-        This method will be used to create a new Activity Model
-        :param user: This determines the user_id of the following User
-        :param start_time: This determines the start time of the following User
-        :param end_time: This determines the end time of the following User
+        This method will be used to create a new Activity Period
+        :param user: This determines the user_id of the following ActivityPeriod
+        :param start_time: This determines the start time of the ActivityPeriod
+        :param end_time: This determines the end time of the ActivityPeriod
         :return response: Will return any Exception if occurred or else a new ActivityPeriod Object
         :return error: Will return True or False
         """
