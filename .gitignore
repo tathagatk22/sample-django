@@ -1,4 +1,7 @@
-/.idea
-venv
 /.vs
+/.idea
+*.log
+venv
+*.pyc
+/db.sqlite3
 *.pyc
