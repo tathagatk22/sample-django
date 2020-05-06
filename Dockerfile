@@ -73,8 +73,5 @@ RUN $VIRTUAL_ENV/bin/python manage.py makemigrations
 # migrate will be performed
 RUN $VIRTUAL_ENV/bin/python manage.py migrate
 
-# Creating random users
-RUN $VIRTUAL_ENV/bin/python manage.py create_users 10
-
 # Start uWSGI
 CMD ["uwsgi", "--show-config"]
