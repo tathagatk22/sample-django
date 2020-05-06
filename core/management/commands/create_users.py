@@ -26,10 +26,9 @@ class Command(BaseCommand):
         for index in range(total):
             # Random user_id, real_name and timezones will be allotted to a new CustomUser Object
             user_id = uuid.uuid1()
-            timezones = tuple(pytz.common_timezones)
             # Creating a new Custom User object
             response, error = CustomUser.objects.create_user(user_id=user_id, real_name=get_random_string(),
-                                                             tz=random.choice(timezones))
+                                                             tz=random.choice(pytz.all_timezones))
             if error:
                 raise Exception(response)
             else:
