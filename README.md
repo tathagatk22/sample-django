@@ -1,6 +1,6 @@
 # sample-django
 
-This project is created while keeping in mind that it will perform certain operations regarding CustomUser Model and their respective ActivityPeriod Models.
+This project is created in Python 2.7 and Django 1.11.24 while keeping in mind that it will perform certain operations regarding CustomUser Model and their respective ActivityPeriod Models.
 
 ## CustomUser Model:
 - **id** (This field will be the primary key for this Model and will store the data in the form of UUID)
@@ -109,7 +109,7 @@ This section will list down all the URL requests which are available in this pro
  
  This project can be hosted using many tricks, one of them is shown below.
  
-- Hosting on Ubuntu using gunicorn
+- Hosting on Ubuntu using Gunicorn 19.10.0 without static content
     
     ```
   # To install the latest updates of ubuntu
