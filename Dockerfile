@@ -16,15 +16,15 @@ RUN set -ex \
 # Copy in your requirements file
 COPY requirements.txt /requirements.txt
 
+# Setting virtual env path
+ENV VIRTUAL_ENV=/venv
+
 # Install requirements for the django project
 RUN pip install --upgrade pip \
     && pip install virtualenv \
     && virtualenv $VIRTUAL_ENV \
     && $VIRTUAL_ENV/bin/pip install -U pip \
     && $VIRTUAL_ENV/bin/pip install --no-cache-dir -r /requirements.txt
-
-# Setting virtual env path
-ENV VIRTUAL_ENV=/venv
 
 # Removing unwanted dependencies
 RUN set -ex \
