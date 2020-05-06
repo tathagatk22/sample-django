@@ -3,5 +3,5 @@
 *.log
 venv
 *.pyc
-/db.sqlite3
+/local_db/db.sqlite3
 *.pyc
