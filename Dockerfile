@@ -76,8 +76,5 @@ RUN $VIRTUAL_ENV/bin/python manage.py migrate
 # Creating random users
 RUN $VIRTUAL_ENV/bin/python manage.py create_users 10
 
-# Creating random activity periods for random users
-RUN $VIRTUAL_ENV/bin/python manage.py create_activity_period_random_users 20
-
 # Start uWSGI
 CMD ["uwsgi", "--show-config"]
