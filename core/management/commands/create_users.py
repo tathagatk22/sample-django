@@ -25,11 +25,8 @@ class Command(BaseCommand):
             raise Exception('Please provide positive integer')
         for index in range(total):
             # Random user_id, real_name and timezones will be allotted to a new CustomUser Object
-            user_id = uuid.uuid1()
+            user_uuid = uuid.uuid1()
             # Creating a new Custom User object
-            response, error = CustomUser.objects.create_user(user_id=user_id, real_name=get_random_string(),
-                                                             tz=random.choice(pytz.all_timezones))
-            if error:
-                raise Exception(response)
-            else:
-                print 'Custom User object created with user_id %s' % user_id
+            CustomUser.objects.create(id=user_uuid, real_name=get_random_string(),
+                                      tz=random.choice(pytz.all_timezones))
+            print 'Custom User object created with user_id %s' % user_uuid
