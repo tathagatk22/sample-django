@@ -2,6 +2,44 @@
 
 This project is created in Python 2.7 and Django 1.11.24 while keeping in mind that it will perform certain operations regarding CustomUser Model and their respective ActivityPeriod Models.
 
+# Problem Statement:
+Design and implement a Django application with User and ActivityPeriod models, write
+a custom management command to populate the database with some dummy data, and design
+an API to serve that data in the json format.
+
+JSON Response:
+   ```json
+      {
+      "ok": true,
+      "members": [
+        {
+          "tz": "Africa/Addis_Ababa",
+          "activity_periods": [
+        
+      ],
+      "id": "56398ade-8fac-11ea-9836-b42e99a38ee8",
+      "real_name": "rK6I8liqpABK"
+    },
+    {
+      "tz": "Africa/Kinshasa",
+      "activity_periods": [
+        {
+          "start_time": "May 06 2020 08:45 PM",
+          "end_time": "May 06 2020 09:23 PM"
+        },
+        {
+          "start_time": "May 06 2020 08:45 PM",
+          "end_time": "May 06 2020 09:45 PM"
+        }
+      ],
+      "id": "56db491e-8fac-11ea-bbe7-b42e99a38ee8",
+      "real_name": "z1eyL9pEgqSc"
+    }
+    ]
+  }
+```
+
+
 ## CustomUser Model:
 - **id** (This field will be the primary key for this Model and will store the data in the form of UUID)
 - **real_name** (This field value will be a character field with limit 255)
