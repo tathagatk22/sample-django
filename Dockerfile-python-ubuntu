@@ -1,18 +1,13 @@
-FROM centos:7
+FROM python:2.7-slim
 
 # Install build deps, then run `pip install`, then remove unneeded build deps all in a single step.
 RUN set -ex \
-    && yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False epel-release yum-utils unixODBC unixODBC-devel  \
-    && BUILD_DEPS=" \
-        gcc \
-        gcc-c++ \
-        python-devel \
-        kernel-devel \
-        make \
-        python-pip \
-        postgresql-devel \
+    && RUN_DEPS=" \
+        postgresql-client \
     " \
-    && yum update -y && yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False $BUILD_DEPS
+    && seq 1 8 | xargs -I{} mkdir -p /usr/share/man/man{} \
+    && apt-get update && apt-get install -y --no-install-recommends $RUN_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy in your requirements file
 COPY docker-python-requirements.txt /requirements.txt
@@ -20,25 +15,28 @@ COPY docker-python-requirements.txt /requirements.txt
 # Setting virtual env path
 ENV VIRTUAL_ENV=/venv
 
-# Install requirements for the django project
-RUN pip install --upgrade pip \
+RUN set -ex \
+    && BUILD_DEPS=" \
+        build-essential \
+        libpcre3-dev \
+        libpq-dev \
+    " \
+    && apt-get update && apt-get install -y --no-install-recommends $BUILD_DEPS \
+    && pip install --upgrade pip \
     && pip install virtualenv \
     && virtualenv $VIRTUAL_ENV \
     && $VIRTUAL_ENV/bin/pip install -U pip \
-    && $VIRTUAL_ENV/bin/pip install --no-cache-dir -r /requirements.txt
+    && $VIRTUAL_ENV/bin/pip install --no-cache-dir -r /requirements.txt \
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $BUILD_DEPS \
+    && rm -rf /var/lib/apt/lists/*
 
 # Removing unwanted dependencies
 RUN set -ex \
-    && BUILD_DEPS=" \
-        gcc \
-        gcc-c++ \
-        python-devel \
-        kernel-devel \
-        make \
-        python-pip \
-        postgresql-devel \
-    " \
-    && yum remove -y $BUILD_DEPS
+    && apt autoremove -y \
+    && apt-get clean -y \
+    && apt-get autoclean -y \
+    && rm -rf /home/*/.local/share/Trash/*/** &> /dev/null \
+    && rm -rf /root/.local/share/Trash/*/** &> /dev/null
 
 # Copy your application code to the container and configuration files
 COPY ./init.sh /
