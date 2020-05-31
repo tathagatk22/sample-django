@@ -15,7 +15,7 @@ RUN set -ex \
     && yum update -y && yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False $BUILD_DEPS
 
 # Copy in your requirements file
-COPY requirements.txt /requirements.txt
+COPY docker-python-requirements.txt.txt /requirements.txt
 
 # Setting virtual env path
 ENV VIRTUAL_ENV=/venv
@@ -41,6 +41,8 @@ RUN set -ex \
     && yum remove -y $BUILD_DEPS
 
 # Copy your application code to the container and configuration files
+COPY ./init.sh /
+RUN chmod +x ./init.sh
 RUN mkdir -p /usr/src/app/sample-django/
 WORKDIR /usr/src/app/sample-django/
 COPY . /usr/src/app/sample-django/
@@ -50,9 +52,6 @@ EXPOSE 8000
 
 # Add any static environment variables needed by Django or your settings file here:
 ENV DJANGO_SETTINGS_MODULE=django_sample_project.settings
-
-# Call collectstatic (customize the following line with the minimal environment variables needed for manage.py to run):
-RUN DATABASE_URL='' $VIRTUAL_ENV/bin/python manage.py collectstatic --noinput
 
 # Tell uWSGI where to find your wsgi file (change this):
 ENV UWSGI_WSGI_FILE=/usr/src/app/sample-django/django_sample_project/wsgi.py
@@ -69,11 +68,5 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 # uWSGI static file serving configuration (customize or comment out if not needed):
 ENV UWSGI_STATIC_MAP="/static/=/code/static/" UWSGI_STATIC_EXPIRES_URI="/static/.*\.[a-f0-9]{12,}\.(css|js|png|jpg|jpeg|gif|ico|woff|ttf|otf|svg|scss|map|txt) 315360000"
 
-# makemigrations will be performed
-RUN $VIRTUAL_ENV/bin/python manage.py makemigrations
-
-# migrate will be performed
-RUN $VIRTUAL_ENV/bin/python manage.py migrate
-
 # Start uWSGI
-CMD ["uwsgi", "--show-config"]
+CMD ["/init.sh"]

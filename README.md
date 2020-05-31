@@ -198,4 +198,24 @@ This section will list down all the URL requests which are available in this pro
   
   $ gunicorn --daemon --bind 0.0.0.0:80 --workers 3 django_sample_project.wsgi
   ```
-    
+ - Hosting on Docker Containerized platform using uWSGI web server with custom management command to populate the database with some dummy data
+    ```
+    # Building an Docker image with the tag which includes commit-id 
+    # which will be used to maintaining multiple version for docker images.
+    $ docker build -t sample-django:$(git rev-parse --short HEAD) -f Dockerfile .
+
+    # Running an Docker image
+    $ docker run -itd -p 80:8000 -e DB_Name=$(DB_Name) -e DB_User=$(DB_User) -e DB_Password=$(DB_Password) -e DB_Host=$(DB_Host) -e DB_Port=$(DB_Port) sample-django:$(Tag_Name)
+
+    # Below commands will not create a new container with the application in running state,
+    # it will execute and run the commands
+    # which will overwrite the existing CMD present in Dockerfile
+    # and performs just like a normal command line utility.
+
+    # Populate the database with custom users using Docker command
+    $ docker run --rm -e DB_Name=$(DB_Name) -e DB_User=$(DB_User) -e DB_Password=$(DB_Password) -e DB_Host=$(DB_Host) -e DB_Port=$(DB_Port) sample-django:$(Tag_Name) /venv/bin/python manage.py create_users 10
+
+    # Populate the database with custom users using Docker command
+    $ docker run --rm -e DB_Name=$(DB_Name) -e DB_User=$(DB_User) -e DB_Password=$(DB_Password) -e DB_Host=$(DB_Host) -e DB_Port=$(DB_Port) sample-django:$(Tag_Name) /venv/bin/python manage.py create_activity_period_for_random_users 10
+    ```
+ 
