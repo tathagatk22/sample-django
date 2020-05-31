@@ -15,7 +15,7 @@ RUN set -ex \
     && yum update -y && yum install -y --setopt=tsflags=nodocs --setopt=skip_missing_names_on_install=False $BUILD_DEPS
 
 # Copy in your requirements file
-COPY docker-python-requirements.txt.txt /requirements.txt
+COPY docker-python-requirements.txt /requirements.txt
 
 # Setting virtual env path
 ENV VIRTUAL_ENV=/venv
