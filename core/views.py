@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import JsonResponse
-from django.shortcuts import render
+import random
+import uuid
 
+import pytz
+from django.http import JsonResponse
 # Create your views here.
+from django.utils.crypto import get_random_string
 from rest_framework.decorators import api_view
 
 from core.models import CustomUser, ActivityPeriods
@@ -53,6 +56,39 @@ def fetch_data(request):
             })
             user_json_list.append(user_json)
         json_response.update({'members': user_json_list})
+
+    except Exception:
+
+        json_response.update({'ok': False})
+
+    finally:
+
+        return JsonResponse(json_response, safe=False)
+
+
+@api_view(['POST'])
+def create_user(request):
+    """
+    This API will be used to fetch data for all custom users
+    """
+    json_response = {
+        'ok': True,
+        'member_details': {}
+    }
+    try:
+        user_uuid = uuid.uuid1()
+        tz = random.choice(pytz.all_timezones)
+        random_string = get_random_string()
+        # Creating a new Custom User object
+        CustomUser.objects.create(id=user_uuid, real_name=random_string,
+                                  tz=tz)
+
+        json_response.update({'member_details': {
+            'id': user_uuid,
+            'real_name': random_string,
+            'tz': tz,
+            'activity_periods': []
+        }})
 
     except Exception:
 
