@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import random
 import uuid
+from datetime import datetime, timedelta
 
 import pytz
 from django.http import JsonResponse
@@ -90,6 +91,44 @@ def create_user(request):
             'activity_periods': []
         }})
 
+    except Exception:
+
+        json_response.update({'ok': False})
+
+    finally:
+
+        return JsonResponse(json_response, safe=False)
+
+@api_view(['POST'])
+def create_activity_period(request):
+    activity_period_details = []
+    json_response = {
+        'ok': True,
+        'activity_period_details': []
+    }
+    try:
+        all_objects = CustomUser.objects.all()
+        user_object_list = list(all_objects)
+        # If length of list 0 then no users are present
+        if len(user_object_list) > 0:
+            for index in range(10):
+                # Random CustomUser object will be chosen for activity period.
+                custom_user_object = user_object_list[random.randint(0, len(user_object_list) - 1)]
+                user_uuid = custom_user_object.id
+                start_time = datetime.now().strftime("%B %d %Y %I:%M %p")
+                end_time = (datetime.now() + timedelta(minutes=random.randint(10, 60))).strftime(
+                    "%B %d %Y %I:%M %p")
+                # Creating a new Activity Period object
+                response, error = ActivityPeriods.objects.create_activity_period(user_uuid=user_uuid,
+                                                                                 start_time=start_time,
+                                                                                 end_time=end_time)
+                if error:
+                    raise Exception(response)
+                else:
+                    activity_period_details.append({'user_uuid': user_uuid,
+                                                    'start_time': start_time,
+                                                    'end_time': end_time})
+            json_response.update({'activity_period_details': activity_period_details})
     except Exception:
 
         json_response.update({'ok': False})
