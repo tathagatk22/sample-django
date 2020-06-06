@@ -33,6 +33,15 @@ pipeline {
             description: 'Please select base OS to build from.', 
             name: 'selection_os'
         )
+        choice(
+            choices:
+            [
+                'True',
+                'False'
+            ],
+            description: 'Please select True to deploy this build on Kubernetes Cluster.',
+            name: 'deployment_value'
+        )
 	}
     stages {
         stage('Git checkout from Branch') {
@@ -107,12 +116,16 @@ pipeline {
             }
         }
         stage('Deploying on Kubernetes'){
+            when {
+                    expression { params.deployment_value == 'True' }
+                }
             steps{
                 script {
                     git url: "$githubDeployRepo" 
                     withCredentials([usernamePassword(credentialsId: "${registryCredential}", usernameVariable: 'username', passwordVariable: 'password')])
-                    {    
-                        sh (script: "kubectl create secret docker-registry regcred --docker-server=docker.io --docker-username=$username --docker-password=\"$password\" ")
+                    {
+                        sh (script: "kubectl delete secret --ignore-not-found regcred")
+                        sh (script: "kubectl apply secret docker-registry regcred --docker-server=docker.io --docker-username=$username --docker-password=\"$password\" ")
                         sh (script: "kubectl apply -f .")  
                         sh (script: "kubectl set image deployment/sample-django-deployment sample-django=$registry:$BUILD_NUMBER --record")
                     }                    
