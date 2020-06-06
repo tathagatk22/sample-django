@@ -125,7 +125,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: "${registryCredential}", usernameVariable: 'username', passwordVariable: 'password')])
                     {
                         sh (script: "kubectl delete secret --ignore-not-found regcred")
-                        sh (script: "kubectl apply secret docker-registry regcred --docker-server=docker.io --docker-username=$username --docker-password=\"$password\" ")
+                        sh (script: "kubectl create secret docker-registry regcred --docker-server=docker.io --docker-username=$username --docker-password=\"$password\" ")
                         sh (script: "kubectl apply -f .")  
                         sh (script: "kubectl set image deployment/sample-django-deployment sample-django=$registry:$BUILD_NUMBER --record")
                     }                    
